@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.My.mapper.KnowledgeMapper">
+    
+    <resultMap type="Knowledge" id="KnowledgeResult">
+        <result property="id"    column="id"    />
+        <result property="dataId"    column="data_id"    />
+        <result property="title"    column="title"    />
+        <result property="datas"    column="datas"    />
+        <result property="userId"    column="user_id"    />
+        <result property="comment"    column="comment"    />
+        <result property="imgs"    column="imgs"    />
+    </resultMap>
+
+    <sql id="selectKnowledgeVo">
+        select id, data_id, title, datas, user_id, comment, imgs from knowledge
+    </sql>
+
+    <select id="selectKnowledgeList" parameterType="Knowledge" resultMap="KnowledgeResult">
+        <include refid="selectKnowledgeVo"/>
+        <where>  
+            <if test="dataId != null "> and data_id = #{dataId}</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="datas != null  and datas != ''"> and datas = #{datas}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="comment != null  and comment != ''"> and comment = #{comment}</if>
+            <if test="imgs != null  and imgs != ''"> and imgs = #{imgs}</if>
+        </where>
+    </select>
+    
+    <select id="selectKnowledgeById" parameterType="Long" resultMap="KnowledgeResult">
+        <include refid="selectKnowledgeVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertKnowledge" parameterType="Knowledge">
+        insert into knowledge
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="dataId != null">data_id,</if>
+            <if test="title != null">title,</if>
+            <if test="datas != null">datas,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="comment != null">comment,</if>
+            <if test="imgs != null">imgs,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="dataId != null">#{dataId},</if>
+            <if test="title != null">#{title},</if>
+            <if test="datas != null">#{datas},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="comment != null">#{comment},</if>
+            <if test="imgs != null">#{imgs},</if>
+         </trim>
+    </insert>
+
+    <update id="updateKnowledge" parameterType="Knowledge">
+        update knowledge
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dataId != null">data_id = #{dataId},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="datas != null">datas = #{datas},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="comment != null">comment = #{comment},</if>
+            <if test="imgs != null">imgs = #{imgs},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteKnowledgeById" parameterType="Long">
+        delete from knowledge where id = #{id}
+    </delete>
+
+    <delete id="deleteKnowledgeByIds" parameterType="String">
+        delete from knowledge where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="ByUserName" resultType="com.ruoyi.My.domain.headportrait">
+            select
+            avatar AS url
+            from
+            sys_user
+            where
+            user_name=#{username}
+    </select>
+</mapper>

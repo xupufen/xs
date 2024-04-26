@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.My.mapper.UserShopMapper">
+    
+    <resultMap type="UserShop" id="UserShopResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="userName"    />
+        <result property="shopId"    column="shop_id"    />
+        <result property="shopName"    column="shopName"    />
+        <result property="shopNum"    column="shop_sum"    />
+        <result property="sum"    column="sum"    />
+        <result property="addres"    column="addres"    />
+        <result property="shopStat"    column="order_status"    />
+    </resultMap>
+
+    <sql id="selectUserShopVo">
+        SELECT
+            us.id AS id,
+            u.user_id AS user_id,
+            u.nick_name AS userName,
+            s.shop_id AS shopId,
+            s.shop_name AS shopName,
+            s.shop_price AS price,
+            us.shop_num AS shop_sum,
+            us.sum AS sum,
+            us.addres AS addres,
+            us.shop_stat AS order_status
+        FROM
+            user_shop us
+                LEFT JOIN
+            shop_data s ON us.shop_id = s.shop_id
+                LEFT JOIN
+            sys_user u ON us.user_id = u.user_id
+    </sql>
+
+    <select id="selectUserShopList" parameterType="UserShop" resultMap="UserShopResult">
+        SELECT
+            us.id AS id,
+            u.user_id AS user_id,
+            u.nick_name AS userName,
+            s.shop_id,
+            s.shop_name AS shopName,
+            s.shop_imgs AS imgs,
+            s.shop_price AS price,
+            us.shop_num AS shop_sum,
+            us.sum AS sum,
+            us.addres AS addres,
+            us.shop_stat AS order_status
+        FROM
+            user_shop us
+                LEFT JOIN
+            shop_data s ON us.shop_id = s.shop_id
+                LEFT JOIN
+            sys_user u ON us.user_id = u.user_id
+    </select>
+    
+    <select id="selectUserShopById" parameterType="Long" resultMap="UserShopResult">
+        SELECT
+        us.id AS id,
+        u.user_id AS user_id,
+        u.nick_name AS userName,
+        s.shop_id,
+        s.shop_name AS shopName,
+        s.shop_price AS price,
+        us.shop_num AS shop_sum,
+        us.sum AS sum,
+        us.addres AS addres,
+        us.shop_stat AS order_status
+        FROM
+        user_shop us
+        LEFT JOIN
+        shop_data s ON us.shop_id = s.shop_id
+        LEFT JOIN
+        sys_user u ON us.user_id = u.user_id
+        WHERE us.id=#{id}
+    </select>
+
+    <insert id="insertUserShop" parameterType="UserShop" useGeneratedKeys="true" keyProperty="id">
+        insert into
+            user_shop
+            (user_id, shop_id, shop_num, sum, addres) VALUES
+            (#{userId},#{shopId},#{shopNum},#{sum},#{addres})
+    </insert>
+
+    <update id="updateUserShop" parameterType="UserShop">
+        update user_shop
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="shopId != null">shop_id = #{shopId},</if>
+            <if test="shopNum != null">shop_num = #{shopNum},</if>
+            <if test="sum != null and sum != ''">sum = #{sum},</if>
+            <if test="addres != null and addres != ''">addres = #{addres},</if>
+            <if test="shopStat != null">shop_stat = #{shopStat},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteUserShopById" parameterType="Long">
+        delete from user_shop where id = #{id}
+    </delete>
+
+    <delete id="deleteUserShopByIds" parameterType="String">
+        delete from user_shop where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectpresentUserShopById" resultType="com.ruoyi.My.domain.UserShop">
+       SELECT
+        us.id AS id,
+        u.user_id AS userId,
+        u.nick_name AS userName,
+        s.shop_id AS shopId,
+        s.shop_name AS shopName,
+        s.shop_price AS price,
+        us.shop_num AS shop_num,
+        us.sum AS sum,
+        us.addres AS addres,
+        us.shop_stat AS order_status
+        FROM
+            user_shop us
+                LEFT JOIN
+            shop_data s ON us.shop_id = s.shop_id
+                LEFT JOIN
+            sys_user u ON us.user_id = u.user_id
+        where us.user_id=#{userid}
+    </select>
+</mapper>

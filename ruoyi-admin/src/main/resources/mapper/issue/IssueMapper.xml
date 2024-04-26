@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.My.mapper.IssueMapper">
+    
+    <resultMap type="Issue" id="IssueResult">
+        <result property="id"    column="id"    />
+        <result property="title"    column="title"    />
+        <result property="issuebody"    column="issuebody"    />
+        <result property="start"    column="start"    />
+    </resultMap>
+
+    <sql id="selectIssueVo">
+        select id, title, issuebody, start from issue
+    </sql>
+
+    <select id="selectIssueList" parameterType="Issue" resultMap="IssueResult">
+        <include refid="selectIssueVo"/>
+        <where>  
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="issuebody != null  and issuebody != ''"> and issuebody = #{issuebody}</if>
+            <if test="start != null "> and start = #{start}</if>
+        </where>
+    </select>
+    
+    <select id="selectIssueById" parameterType="Long" resultMap="IssueResult">
+        <include refid="selectIssueVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertIssue" parameterType="Issue" useGeneratedKeys="true" keyProperty="id">
+        insert into issue
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="issuebody != null">issuebody,</if>
+            <if test="start != null">start,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="issuebody != null">#{issuebody},</if>
+            <if test="start != null">#{start},</if>
+         </trim>
+    </insert>
+
+    <update id="updateIssue" parameterType="Issue">
+        update issue
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="title != null">title = #{title},</if>
+            <if test="issuebody != null">issuebody = #{issuebody},</if>
+            <if test="start != null">start = #{start},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteIssueById" parameterType="Long">
+        delete from issue where id = #{id}
+    </delete>
+
+    <delete id="deleteIssueByIds" parameterType="String">
+        delete from issue where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

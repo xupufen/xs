@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.My.mapper.IntegralMapper">
+    
+    <resultMap type="Integral" id="IntegralResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="integral"    column="integral"    />
+    </resultMap>
+
+    <sql id="selectIntegralVo">
+        select id, user_id, user_name, integral from integral
+    </sql>
+
+    <select id="selectIntegralList" parameterType="Integral" resultMap="IntegralResult">
+<!--        <include refid="selectIntegralVo"/>-->
+<!--        <where>-->
+<!--            <if test="userId != null  and userId != ''"> and user_id = #{userId}</if>-->
+<!--            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>-->
+<!--            <if test="integral != null  and integral != ''"> and integral = #{integral}</if>-->
+<!--        </where>-->
+        SELECT
+        inte.id,
+        user.nick_name AS user_name ,
+        inte.integral AS integral
+        FROM
+        integral AS inte
+        left join
+        sys_user AS user
+        ON user.user_id=inte.user_id
+    </select>
+    
+    <select id="selectIntegralById" parameterType="Long" resultMap="IntegralResult">
+        <include refid="selectIntegralVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertIntegral" parameterType="Integral" useGeneratedKeys="true" keyProperty="id">
+        insert into integral
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="integral != null">integral,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="integral != null">#{integral},</if>
+         </trim>
+    </insert>
+
+    <update id="updateIntegral" parameterType="Integral">
+        update integral
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="integral != null">integral = #{integral},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteIntegralById" parameterType="Long">
+        delete from integral where id = #{id}
+    </delete>
+
+    <delete id="deleteIntegralByIds" parameterType="String">
+        delete from integral where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

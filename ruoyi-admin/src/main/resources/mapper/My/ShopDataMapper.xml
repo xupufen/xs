@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.My.mapper.ShopDataMapper">
+    <resultMap type="ShopData" id="ShopDataResult">
+        <result property="id" column="id"/>
+        <result property="shopId" column="shop_id"/>
+        <result property="shopName" column="shop_name"/>
+        <result property="shopPrice" column="shop_price"/>
+        <result property="shopSum" column="shop_sum"/>
+        <result property="shopStart" column="shop_start"/>
+        <result property="shopData" column="shop_data"/>
+        <result property="shopImgs" column="shop_imgs"/>
+    </resultMap>
+
+    <sql id="selectShopDataVo">
+        select id,
+               shop_id,
+               shop_name,
+               shop_price,
+               shop_sum,
+               shop_start,
+               shop_data,
+               shop_imgs
+        from shop_data
+    </sql>
+
+    <select id="selectShopDataList" parameterType="ShopData" resultMap="ShopDataResult">
+        <include refid="selectShopDataVo"/>
+        <where>
+            <if test="shopId != null ">
+                and shop_id = #{shopId}
+            </if>
+            <if test="shopName != null  and shopName != ''">
+                and shop_name like concat('%', #{shopName}, '%')
+            </if>
+            <if test="shopPrice != null ">
+                and shop_price = #{shopPrice}
+            </if>
+            <if test="shopSum != null  and shopSum != ''">
+                and shop_sum = #{shopSum}
+            </if>
+            <if test="shopStart != null  and shopStart != ''">
+                and shop_start = #{shopStart}
+            </if>
+            <if test="shopData != null  and shopData != ''">
+                and shop_data = #{shopData}
+            </if>
+            <if test="shopImgs != null  and shopImgs != ''">
+                and shop_imgs = #{shopImgs}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectShopDataById" parameterType="Long" resultMap="ShopDataResult">
+        <include refid="selectShopDataVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertShopData" parameterType="ShopData" useGeneratedKeys="true" keyProperty="id">
+        insert into shop_data
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="shopId != null">
+                shop_id,
+            </if>
+            <if test="shopName != null">
+                shop_name,
+            </if>
+            <if test="shopPrice != null">
+                shop_price,
+            </if>
+            <if test="shopSum != null">
+                shop_sum,
+            </if>
+            <if test="shopStart != null">
+                shop_start,
+            </if>
+            <if test="shopData != null">
+                shop_data,
+            </if>
+            <if test="shopImgs != null">
+                shop_imgs,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="shopId != null">
+                #{shopId},
+            </if>
+            <if test="shopName != null">
+                #{shopName},
+            </if>
+            <if test="shopPrice != null">
+                #{shopPrice},
+            </if>
+            <if test="shopSum != null">
+                #{shopSum},
+            </if>
+            <if test="shopStart != null">
+                #{shopStart},
+            </if>
+            <if test="shopData != null">
+                #{shopData},
+            </if>
+            <if test="shopImgs != null">
+                #{shopImgs},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateShopData" parameterType="ShopData">
+        update shop_data
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="shopId != null">
+                shop_id = #{shopId},
+            </if>
+            <if test="shopName != null">
+                shop_name = #{shopName},
+            </if>
+            <if test="shopPrice != null">
+                shop_price = #{shopPrice},
+            </if>
+            <if test="shopSum != null">
+                shop_sum = #{shopSum},
+            </if>
+            <if test="shopStart != null">
+                shop_start = #{shopStart},
+            </if>
+            <if test="shopData != null">
+                shop_data = #{shopData},
+            </if>
+            <if test="shopImgs != null">
+                shop_imgs = #{shopImgs},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteShopDataById" parameterType="Long">
+        delete
+        from shop_data
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteShopDataByIds" parameterType="String">
+        delete from shop_data where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
